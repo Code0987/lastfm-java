@@ -75,7 +75,7 @@ public class Artist extends MusicEntry {
 	 * Retrieves detailed artist info for the given artist or mbid entry.
 	 *
 	 * @param artistOrMbid Name of the artist or an mbid
-	 * @param apiKey The API key
+	 * @param apiKey       The API key
 	 * @return detailed artist info
 	 */
 	public static Artist getInfo(String artistOrMbid, String apiKey) {
@@ -86,9 +86,9 @@ public class Artist extends MusicEntry {
 	 * Retrieves detailed artist info for the given artist or mbid entry.
 	 *
 	 * @param artistOrMbid Name of the artist or an mbid
-	 * @param username The username for the context of the request, or <code>null</code>. If supplied, the user's playcount for this artist is
-	 * included in the response
-	 * @param apiKey The API key
+	 * @param username     The username for the context of the request, or <code>null</code>. If supplied, the user's playcount for this artist is
+	 *                     included in the response
+	 * @param apiKey       The API key
 	 * @return detailed artist info
 	 */
 	public static Artist getInfo(String artistOrMbid, String username, String apiKey) {
@@ -99,10 +99,10 @@ public class Artist extends MusicEntry {
 	 * Retrieves detailed artist info for the given artist or mbid entry.
 	 *
 	 * @param artistOrMbid Name of the artist or an mbid
-	 * @param locale The language to fetch info in, or <code>null</code>
-	 * @param username The username for the context of the request, or <code>null</code>. If supplied, the user's playcount for this artist is
-	 * included in the response
-	 * @param apiKey The API key
+	 * @param locale       The language to fetch info in, or <code>null</code>
+	 * @param username     The username for the context of the request, or <code>null</code>. If supplied, the user's playcount for this artist is
+	 *                     included in the response
+	 * @param apiKey       The API key
 	 * @return detailed artist info
 	 */
 	public static Artist getInfo(String artistOrMbid, Locale locale, String username, String apiKey) {
@@ -135,20 +135,29 @@ public class Artist extends MusicEntry {
 	/**
 	 * Returns <code>limit</code> similar artists to the given one.
 	 *
-	 * @param artist Artist's name
-	 * @param limit Number of maximum results
+	 * @param artistOrMbid Artist's name
+	 * @param limit  Number of maximum results
 	 * @param apiKey The API key
 	 * @return similar artists
 	 */
-	public static Collection<Artist> getSimilar(String artist, int limit, String apiKey) {
-		Result result = Caller.getInstance().call("artist.getSimilar", apiKey, "artist", artist, "limit", String.valueOf(limit));
+	public static Collection<Artist> getSimilar(String artistOrMbid, int limit, String apiKey) {
+		Map<String, String> params = new HashMap<String, String>();
+		if (StringUtilities.isMbid(artistOrMbid)) {
+			params.put("mbid", artistOrMbid);
+		} else {
+			params.put("artist", artistOrMbid);
+		}
+		if (limit > 0){
+			params.put("limit", "" + limit);
+		}
+		Result result = Caller.getInstance().call("artist.getSimilar", apiKey, params);
 		return ResponseBuilder.buildCollection(result, Artist.class);
 	}
 
 	/**
 	 * Searches for an artist and returns a <code>Collection</code> of possible matches.
 	 *
-	 * @param name The artist name to look up
+	 * @param name   The artist name to look up
 	 * @param apiKey The API key
 	 * @return a list of possible matches
 	 */
@@ -213,8 +222,8 @@ public class Artist extends MusicEntry {
 	/**
 	 * Tag an artist with one or more user supplied tags.
 	 *
-	 * @param artist The artist name in question.
-	 * @param tags A comma delimited list of user supplied tags to apply to this artist. Accepts a maximum of 10 tags.
+	 * @param artist  The artist name in question.
+	 * @param tags    A comma delimited list of user supplied tags to apply to this artist. Accepts a maximum of 10 tags.
 	 * @param session A Session instance
 	 * @return the result of the operation
 	 */
@@ -225,8 +234,8 @@ public class Artist extends MusicEntry {
 	/**
 	 * Remove a user's tag from an artist.
 	 *
-	 * @param artist The artist name in question.
-	 * @param tag A single user tag to remove from this artist.
+	 * @param artist  The artist name in question.
+	 * @param tag     A single user tag to remove from this artist.
 	 * @param session A Session instance
 	 * @return the result of the operation
 	 */
@@ -237,10 +246,10 @@ public class Artist extends MusicEntry {
 	/**
 	 * Share an artist with one or more Last.fm users or other friends.
 	 *
-	 * @param artist The artist to share.
+	 * @param artist     The artist to share.
 	 * @param recipients A comma delimited list of email addresses or Last.fm usernames. Maximum is 10.
-	 * @param message An optional message to send with the recommendation.
-	 * @param session A Session instance
+	 * @param message    An optional message to send with the recommendation.
+	 * @param session    A Session instance
 	 * @return the Result of the operation
 	 */
 	public static Result share(String artist, String recipients, String message, Session session) {
@@ -250,7 +259,7 @@ public class Artist extends MusicEntry {
 	/**
 	 * Get the tags applied by an individual user to an artist on Last.fm.
 	 *
-	 * @param artist The artist name in question
+	 * @param artist  The artist name in question
 	 * @param session A Session instance
 	 * @return a list of tags
 	 */
@@ -270,21 +279,21 @@ public class Artist extends MusicEntry {
 	 * Returns a list of upcoming events for an artist.
 	 *
 	 * @param artistOrMbid The artist name in question
-	 * @param apiKey A Last.fm API key
+	 * @param apiKey       A Last.fm API key
 	 * @return a list of events
 	 */
 	public static PaginatedResult<Event> getEvents(String artistOrMbid, String apiKey) {
 		return getEvents(artistOrMbid, false, -1, -1, apiKey);
 	}
-	
+
 	/**
 	 * Returns a list of upcoming events for an artist.
 	 *
-	 * @param artistOrMbid The artist name in question
+	 * @param artistOrMbid  The artist name in question
 	 * @param festivalsOnly Whether only festivals should be returned, or all events
-	 * @param page The page number to fetch
-	 * @param limit The number of results to fetch per page
-	 * @param apiKey A Last.fm API key
+	 * @param page          The page number to fetch
+	 * @param limit         The number of results to fetch per page
+	 * @param apiKey        A Last.fm API key
 	 * @return a list of events
 	 */
 	public static PaginatedResult<Event> getEvents(String artistOrMbid, boolean festivalsOnly, int page, int limit, String apiKey) {
@@ -296,7 +305,7 @@ public class Artist extends MusicEntry {
 		}
 		MapUtilities.nullSafePut(params, "page", page);
 		MapUtilities.nullSafePut(params, "limit", limit);
-		if(festivalsOnly)
+		if (festivalsOnly)
 			params.put("festivalsonly", "1");
 		Result result = Caller.getInstance().call("artist.getEvents", apiKey, params);
 		return ResponseBuilder.buildPaginatedResult(result, Event.class);
@@ -306,21 +315,21 @@ public class Artist extends MusicEntry {
 	 * Get a paginated list of all the events this artist has played at in the past.
 	 *
 	 * @param artistOrMbid The name of the artist you would like to fetch event listings for
-	 * @param apiKey A Last.fm API key
+	 * @param apiKey       A Last.fm API key
 	 * @return a list of past events
 	 */
 	public static PaginatedResult<Event> getPastEvents(String artistOrMbid, String apiKey) {
 		return getPastEvents(artistOrMbid, false, -1, -1, apiKey);
 	}
-	
+
 	/**
 	 * Get a paginated list of all the events this artist has played at in the past.
 	 *
-	 * @param artistOrMbid The name of the artist you would like to fetch event listings for
+	 * @param artistOrMbid  The name of the artist you would like to fetch event listings for
 	 * @param festivalsOnly Whether only festivals should be returned, or all events
-	 * @param page The page of results to return
-	 * @param limit The maximum number of results to return per page
-	 * @param apiKey A Last.fm API key
+	 * @param page          The page of results to return
+	 * @param limit         The maximum number of results to return per page
+	 * @param apiKey        A Last.fm API key
 	 * @return a list of past events
 	 */
 	public static PaginatedResult<Event> getPastEvents(String artistOrMbid, boolean festivalsOnly, int page, int limit, String apiKey) {
@@ -332,7 +341,7 @@ public class Artist extends MusicEntry {
 		}
 		MapUtilities.nullSafePut(params, "page", page);
 		MapUtilities.nullSafePut(params, "limit", limit);
-		if(festivalsOnly)
+		if (festivalsOnly)
 			params.put("festivalsonly", "1");
 		Result result = Caller.getInstance().call("artist.getPastEvents", apiKey, params);
 		return ResponseBuilder.buildPaginatedResult(result, Event.class);
@@ -342,7 +351,7 @@ public class Artist extends MusicEntry {
 	 * Get {@link Image}s for this artist in a variety of sizes.
 	 *
 	 * @param artistOrMbid The artist name in question
-	 * @param apiKey A Last.fm API key
+	 * @param apiKey       A Last.fm API key
 	 * @return a list of {@link Image}s
 	 */
 	public static PaginatedResult<Image> getImages(String artistOrMbid, String apiKey) {
@@ -353,9 +362,9 @@ public class Artist extends MusicEntry {
 	 * Get {@link Image}s for this artist in a variety of sizes.
 	 *
 	 * @param artistOrMbid The artist name in question
-	 * @param page Which page of limit amount to display
-	 * @param limit How many to return. Defaults and maxes out at 50
-	 * @param apiKey A Last.fm API key
+	 * @param page         Which page of limit amount to display
+	 * @param limit        How many to return. Defaults and maxes out at 50
+	 * @param apiKey       A Last.fm API key
 	 * @return a list of {@link Image}s
 	 */
 	public static PaginatedResult<Image> getImages(String artistOrMbid, int page, int limit, String apiKey) {
@@ -374,7 +383,7 @@ public class Artist extends MusicEntry {
 	/**
 	 * Shout on this artist's shoutbox
 	 *
-	 * @param artist The name of the artist to shout on
+	 * @param artist  The name of the artist to shout on
 	 * @param message The message to post to the shoutbox
 	 * @param session A Session instance
 	 * @return the result of the operation
@@ -406,7 +415,7 @@ public class Artist extends MusicEntry {
 	 * Get shouts for an artist.
 	 *
 	 * @param artistOrMbid The artist name or a musicbrainz id
-	 * @param apiKey A Last.fm API key.
+	 * @param apiKey       A Last.fm API key.
 	 * @return a page of <code>Shout</code>s
 	 */
 	public static PaginatedResult<Shout> getShouts(String artistOrMbid, String apiKey) {
@@ -417,8 +426,8 @@ public class Artist extends MusicEntry {
 	 * Get shouts for an artist.
 	 *
 	 * @param artistOrMbid The artist name or a musicbrainz id
-	 * @param page The page number to fetch
-	 * @param apiKey A Last.fm API key.
+	 * @param page         The page number to fetch
+	 * @param apiKey       A Last.fm API key.
 	 * @return a page of <code>Shout</code>s
 	 */
 	public static PaginatedResult<Shout> getShouts(String artistOrMbid, int page, String apiKey) {
@@ -429,9 +438,9 @@ public class Artist extends MusicEntry {
 	 * Get shouts for an artist.
 	 *
 	 * @param artistOrMbid The artist name or a musicbrainz id
-	 * @param page The page number to fetch
-	 * @param limit An integer used to limit the number of shouts returned per page or -1 for default
-	 * @param apiKey A Last.fm API key.
+	 * @param page         The page number to fetch
+	 * @param limit        An integer used to limit the number of shouts returned per page or -1 for default
+	 * @param apiKey       A Last.fm API key.
 	 * @return a page of <code>Shout</code>s
 	 */
 	public static PaginatedResult<Shout> getShouts(String artistOrMbid, int page, int limit, String apiKey) {

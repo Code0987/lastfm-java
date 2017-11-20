@@ -382,7 +382,6 @@ public class Track extends MusicEntry {
 			params.put("artist", artist);
 			params.put("track", trackOrMbid);
 		}
-
 		if (limit > 0){
 			params.put("limit", "" + limit);
 		}
