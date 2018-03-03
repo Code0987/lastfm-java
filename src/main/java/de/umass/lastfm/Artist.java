@@ -136,8 +136,8 @@ public class Artist extends MusicEntry {
 	 * Returns <code>limit</code> similar artists to the given one.
 	 *
 	 * @param artistOrMbid Artist's name
-	 * @param limit  Number of maximum results
-	 * @param apiKey The API key
+	 * @param limit        Number of maximum results
+	 * @param apiKey       The API key
 	 * @return similar artists
 	 */
 	public static Collection<Artist> getSimilar(String artistOrMbid, int limit, String apiKey) {
@@ -147,7 +147,7 @@ public class Artist extends MusicEntry {
 		} else {
 			params.put("artist", artistOrMbid);
 		}
-		if (limit > 0){
+		if (limit > 0) {
 			params.put("limit", "" + limit);
 		}
 		Result result = Caller.getInstance().call("artist.getSimilar", apiKey, params);
@@ -214,8 +214,8 @@ public class Artist extends MusicEntry {
 	 * @param apiKey A Last.fm API key.
 	 * @return list of top tracks
 	 */
-	public static Collection<Track> getTopTracks(String artist, String apiKey) {
-		Result result = Caller.getInstance().call("artist.getTopTracks", apiKey, "artist", artist);
+	public static Collection<Track> getTopTracks(String artist, int limit, String apiKey) {
+		Result result = Caller.getInstance().call("artist.getTopTracks", apiKey, "artist", artist, "limit", String.valueOf(limit));
 		return ResponseBuilder.buildCollection(result, Track.class);
 	}
 

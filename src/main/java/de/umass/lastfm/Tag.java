@@ -162,8 +162,8 @@ public class Tag implements Comparable<Tag> {
 		return ResponseBuilder.buildCollection(result, Album.class);
 	}
 
-	public static Collection<Track> getTopTracks(String tag, String apiKey) {
-		Result result = Caller.getInstance().call("tag.getTopTracks", apiKey, "tag", tag);
+	public static Collection<Track> getTopTracks(String tag, int limit, String apiKey) {
+		Result result = Caller.getInstance().call("tag.getTopTracks", apiKey, "tag", tag, "limit", String.valueOf(limit));
 		return ResponseBuilder.buildCollection(result, Track.class);
 	}
 
